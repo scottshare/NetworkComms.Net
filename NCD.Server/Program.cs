@@ -1,5 +1,6 @@
 ﻿using NetworkCommsDotNet;
 using NetworkCommsDotNet.Connections;
+using NetworkCommsDotNet.Connections.TCP;
 using NetworkCommsDotNet.Tools;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,12 @@ namespace NCD.Server
             NetworkComms.AppendGlobalIncomingPacketHandler<string>("Message", (packetHeader, connection, incomingString) =>
             {
                 Console.WriteLine("\n  ... Incoming message from " + connection.ToString() + " saying '" + incomingString + "'.");
+                connection.SendObject("Message", "hello_"+connection.ToString());
             });
 
             //Start listening for incoming 'TCP' connections.
             Connection.StartListening(ConnectionType.TCP, IPTools.ParseEndPointFromString(System.Configuration.ConfigurationManager.AppSettings["listenAddress"]));
+            
             Console.ReadKey(true);
             NetworkComms.Shutdown();
         }
